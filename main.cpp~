@@ -1,0 +1,8 @@
+#include <iostream>
+#include "redis.h"
+
+int main() {
+  std::cout << summ(1, 2) << std::endl;
+  printf("%s\n", "Hello redis");
+  printf("%d\n", summ(1, 2));
+}
