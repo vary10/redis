@@ -7,7 +7,13 @@ char Reader::read_char() {
 
 std::string Reader::read_string() {
     std::string res;
-
+    char tmp = read_char();
+    while (tmp != '\r') {
+        res.push_back(tmp);
+        tmp = read_char();
+    }
+    read_char();
+    return res;
 }
 
 int64_t Reader::read_int() {
