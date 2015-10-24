@@ -1,9 +1,13 @@
 #include "reader.h"
 
-
 char Reader::read_char() {
     if (rpos_ == end_) read_more();
     return buffer_[rpos_++];
+}
+
+std::string Reader::read_string() {
+    std::string res;
+
 }
 
 int64_t Reader::read_int() {
