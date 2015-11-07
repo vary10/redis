@@ -14,29 +14,31 @@ void WriteRedisValue(Writer* w, const RedisValue& value) {
             break;
         case REDIS_STRING:
             w->write_char('+');
-            w->write_raw(boost::get<std::string>(value), boost::get<std::string>(value).length());
+            w->write_string(boost::get<std::string>(value));
             w->write_crlf();
             break;
         case REDIS_BULK_STRING:
             w->write_char('$');
-            w->write_raw(boost::get<std::vector<char>>(value), boost::get<std::vector<char>>(value).size());
+//            w->write_string(boost::get<std::vector<char>>(value));
             w->write_crlf();
             break;
         case REDIS_ERROR:
             w->write_char('-');
-            w->write_raw(boost::get<RedisError>(value).msg);
+            w->write_string(boost::get<RedisError>(value).msg);
             w->write_crlf();
             break;
         case REDIS_ARRAY:
+            if (boost::get<std::vector<RedisValue>>(value).size() > 1000) {
+                throw std::invalid_argument("array is too long");
+            }
             w->write_char('*');
             w->write_int(boost::get<std::vector<RedisValue>>(value).size());
-            w->write_crlf;
+            w->write_crlf();
             for (auto elem : boost::get<std::vector<RedisValue>>(value)) {
                 WriteRedisValue(w, elem);
             }
         default:
             throw std::runtime_error("unsupported type");
-            break;
     }
 }
 
@@ -49,25 +51,25 @@ void ReadRedisValue(Reader* r, RedisValue* value) {
             *value = r->read_string();
             break;
         case '-':
-            *value = RedisError(r->read_line());
+            *value = RedisError(r->read_string());
             break;
         case '$':
-            int64_t len = r->read_int();
-            if (len == -1) {
+            int64_t bulk_len = r->read_int();
+            if (bulk_len == -1) {
                 *value = RedisNull();
-            } else {
-                *value = RedisBulkString(r->read_raw(len));
+            }
+            else {
+                *value = RedisBulkString(r->read_raw(bulk_len));
             }
             break;
         case '*':
-            int64_t len = r->read_int();
-            std::vector<RedisValue> *value(len);
-            for (int64_t i = 0; i < len; ++i) {
+            int64_t array_len = r->read_int();
+            std::vector<RedisValue> *value(array_len);
+            for (int64_t i = 0; i < array_len; ++i) {
                 ReadRedisValue(r, &(boost::get<std::vector<RedisValue>>(value)));
             }
             break;
         default:
             throw std::runtime_error("invalid redis value");
-            break;
     }
 }

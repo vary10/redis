@@ -2,9 +2,9 @@
 
 void Writer::write_int(int64_t i) {
     char buff[128];
-    int len = snprintf(buff, sizeof(buff), "%ld", i);
+    size_t buff_len = snprintf(buff, sizeof(buff), "%lld", i);
 
-    write_raw(buff, len);
+    write_raw(buff, buff_len);
 }
 
 void Writer::write_raw(const char* s, size_t len) {
