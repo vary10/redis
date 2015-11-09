@@ -16,7 +16,7 @@ struct RedisError {
 };
 
 struct RedisBulkString {
-    explicit RedisBulkString(std::string txt) : txt(txt) {}
+    explicit RedisBulkString(const std::string& txt) : txt(txt) {}
 
     std::string txt;
 };
