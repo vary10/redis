@@ -43,6 +43,7 @@ void WriteRedisValue(Writer* w, const RedisValue& value) {
 }
 
 void ReadRedisValue(Reader* r, RedisValue* value) {
+    int64_t len = 0;
     switch(r->read_char()) {
         case ':':
             *value = r->read_int();
@@ -54,19 +55,22 @@ void ReadRedisValue(Reader* r, RedisValue* value) {
             *value = RedisError(r->read_string());
             break;
         case '$':
-            int64_t bulk_len = r->read_int();
-            if (bulk_len == -1) {
+            len = r->read_int();
+            if (len == -1) {
                 *value = RedisNull();
             }
             else {
-                *value = RedisBulkString(r->read_raw(bulk_len));
+                std::vector<char> *value;
+                for (int i = 0; i < len; ++i) {
+                    value->push_back(r->read_char());
+                }
             }
             break;
         case '*':
-            int64_t array_len = r->read_int();
-            std::vector<RedisValue> *value(array_len);
-            for (int64_t i = 0; i < array_len; ++i) {
-                ReadRedisValue(r, &(boost::get<std::vector<RedisValue>>(value)));
+            len = r->read_int();
+            *value = std::vector<RedisValue>(len);
+            for (int64_t i = 0; i < len; ++i) {
+                ReadRedisValue(r, &(boost::get<std::vector<RedisValue>>(*value)[i]));
             }
             break;
         default:
