@@ -1,8 +1,9 @@
 project(hse-sample-project)
 cmake_minimum_required(VERSION 2.8)
 
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11")
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11")
+find_package(Boost 1.57.0 COMPONENTS system filesystem REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
 include_directories(.)
 
 add_library(redis
@@ -10,11 +11,12 @@ add_library(redis
   reader.cpp
   writer.cpp
 )
-
 add_executable(redis-server
   main.cpp
 )
-target_link_libraries(redis-server redis pthread)
+
+
+target_link_libraries(redis-server redis pthread ${Boost_LIBRARIES})
 
 include_directories(contrib)
 
