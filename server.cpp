@@ -10,7 +10,7 @@ struct DumbServer : public Server {
     virtual void handle(int conn) { conns.push_back(conn); }
 };
 
-TEST (Server, AcceptsConnection) {
+TEST(Server, AcceptsConnection) {
     DumbServer s;
     s.listen_and_serve;
 

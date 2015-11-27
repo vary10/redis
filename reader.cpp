@@ -16,6 +16,17 @@ std::string Reader::read_string() {
     return res;
 }
 
+std::string Reader::read_raw(int64_t len) {
+    std::string res;
+    char tmp = read_char();
+    for (int64_t i = 0; i < len; ++i) {
+        res.push_back(tmp);
+        tmp = read_char();
+    }
+    read_char();
+    return res;
+}
+
 int64_t Reader::read_int() {
     int64_t i = 0;
     bool negative = false;

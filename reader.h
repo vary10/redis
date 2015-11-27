@@ -11,7 +11,7 @@ public:
 
     char read_char(); // read single char
     std::string read_string(); // read until "\r\n" and skip it
-    std::string read_raw(size_t len); // read string with fixed size and skip "\r\n" at the end
+    std::string read_raw(int64_t len); // read string with fixed size and skip "\r\n" at the end
     int64_t read_int(); // read integer and skip "\r\n"
 
 protected:

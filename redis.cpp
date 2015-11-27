@@ -19,7 +19,9 @@ void WriteRedisValue(Writer* w, const RedisValue& value) {
             break;
         case REDIS_BULK_STRING:
             w->write_char('$');
-//            w->write_string(boost::get<std::vector<char>>(value));
+            w->write_int(boost::get<RedisBulkString>(value).str.size());
+            w->write_crlf();
+            w->write_string(boost::get<RedisBulkString>(value).str);
             w->write_crlf();
             break;
         case REDIS_ERROR:
@@ -37,6 +39,7 @@ void WriteRedisValue(Writer* w, const RedisValue& value) {
             for (auto elem : boost::get<std::vector<RedisValue>>(value)) {
                 WriteRedisValue(w, elem);
             }
+            break;
         default:
             throw std::runtime_error("unsupported type");
     }
@@ -60,14 +63,12 @@ void ReadRedisValue(Reader* r, RedisValue* value) {
                 *value = RedisNull();
             }
             else {
-                std::vector<char> *value;
-                for (int i = 0; i < len; ++i) {
-                    value->push_back(r->read_char());
-                }
+                *value = r->read_raw(len);
             }
             break;
         case '*':
             len = r->read_int();
+            r->read_char();
             *value = std::vector<RedisValue>(len);
             for (int64_t i = 0; i < len; ++i) {
                 ReadRedisValue(r, &(boost::get<std::vector<RedisValue>>(*value)[i]));

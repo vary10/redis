@@ -18,6 +18,10 @@ void Writer::write_raw(const char* s, size_t len) {
     }
 }
 
+void Writer::write_string(const std::string &s) {
+    write_raw(s.c_str(), s.size());
+}
+
 void Writer::write_char(char c) {
     buffer_[wpos_++] = c;
 
