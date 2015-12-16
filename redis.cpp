@@ -63,12 +63,11 @@ void ReadRedisValue(Reader* r, RedisValue* value) {
                 *value = RedisNull();
             }
             else {
-                *value = r->read_raw(len);
+                *value = RedisBulkString(r->read_raw(len));
             }
             break;
         case '*':
             len = r->read_int();
-            r->read_char();
             *value = std::vector<RedisValue>(len);
             for (int64_t i = 0; i < len; ++i) {
                 ReadRedisValue(r, &(boost::get<std::vector<RedisValue>>(*value)[i]));
