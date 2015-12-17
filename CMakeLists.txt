@@ -7,10 +7,10 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(.)
 
 add_library(redis
-  redis.cpp
-  reader.cpp
-  writer.cpp
-)
+        logic/redis.cpp
+        logic/reader.cpp
+        logic/writer.cpp
+        server/listener.cpp server/listener.h server/socket.cpp server/socket.h)
 add_executable(redis-server
   main.cpp
 )
