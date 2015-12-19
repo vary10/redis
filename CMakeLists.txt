@@ -10,7 +10,7 @@ add_library(redis
         logic/redis.cpp
         logic/reader.cpp
         logic/writer.cpp
-        server/listener.cpp server/listener.h server/socket.cpp server/socket.h server/server.cpp server/server.h server/request.cpp server/request.h)
+        server/listener.cpp server/listener.h server/socket.cpp server/socket.h server/server.cpp server/server.h server/request.cpp server/request.h server/command.cpp server/command.h)
 add_executable(redis-server
   main.cpp
 )
