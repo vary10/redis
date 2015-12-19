@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include "../server/socket.h"
 
 class Writer {
 public:
@@ -25,6 +26,15 @@ public:
     explicit StringWriter(size_t buffer_size = 1024) : Writer(buffer_size) {}
 
     std::string result;
+
+    virtual void flush() override;
+};
+
+class SocketWriter : public Writer {
+public:
+    explicit SocketWriter(int sd, size_t buffer_size = 1024) : sock(sd), Writer(buffer_size) {}
+
+    Socket sock;
 
     virtual void flush() override;
 };

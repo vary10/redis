@@ -38,3 +38,9 @@ void StringWriter::flush() {
     result.append(buffer_.begin(), buffer_.begin() + wpos_);
     wpos_ = 0;
 }
+
+
+void SocketWriter::flush() {
+    sock.send_data(std::string(buffer_.begin(), buffer_.begin() + wpos_));
+    wpos_ = 0;
+}

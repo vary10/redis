@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
-
+#include "../server/socket.h"
 
 class Reader {
 public:
@@ -25,6 +25,16 @@ class StringReader : public Reader {
 public:
     explicit StringReader(size_t buffer_size = 1024) : Reader(buffer_size) {}
 
+    std::string input;
+
+    virtual void read_more() override;
+};
+
+class SocketReader : public Reader {
+public:
+    explicit SocketReader(int sd, size_t buffer_size = 1024) : sock(sd), Reader(buffer_size) {}
+
+    Socket sock;
     std::string input;
 
     virtual void read_more() override;
