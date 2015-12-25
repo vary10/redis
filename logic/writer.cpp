@@ -41,6 +41,7 @@ void StringWriter::flush() {
 
 
 void SocketWriter::flush() {
-    sock.send_data(std::string(buffer_.begin(), buffer_.begin() + wpos_));
+
+    sock.send_data(buffer_.data(), wpos_);
     wpos_ = 0;
 }

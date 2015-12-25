@@ -1,4 +1,4 @@
-#include "redis.h"
+#include "logic/redis.h"
 
 #include <gtest/gtest.h>
 
@@ -156,3 +156,31 @@ TEST(ReadRedisValue, Array) {
     EXPECT_EQ(REDIS_NULL, boost::get<std::vector<RedisValue>>(array)[3].which());
 }
 
+#include "../server/listener.h"
+#include "thread"
+
+void thread_func(int* port) {
+    int sd;
+    struct sockaddr_in server;
+
+    sd = socket(AF_INET , SOCK_STREAM , 0);
+
+    server.sin_addr.s_addr = inet_addr("127.0.0.1");  //
+    server.sin_family = AF_INET;
+    server.sin_port = htons(*port);
+
+    (connect(sd , (struct sockaddr *)&server , sizeof(server)));
+}
+
+TEST(ServerListener, AcceptConn) {
+    int port = 9999;
+    Listener lsn(port, 1);
+
+    std::thread thr(thread_func, &port);
+    if (lsn.accept_client() == nullptr) {
+        FAIL();
+    } else {
+        SUCCEED();
+    }
+    thr.join();
+}

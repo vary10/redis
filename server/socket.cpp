@@ -13,22 +13,11 @@ int Socket::get_sd() {
     return sd;
 }
 
-void Socket::send_data(std::string&& input) {
+void Socket::send_data(char* input, size_t len) {
     size_t size = 0;
-    while ((size += write(sd, input.c_str(), input.size() - size)) < input.size()) {}
+    while ((size += write(sd, input, len - size)) < len) {}
 }
 
-std::string* Socket::get_data(size_t size) {
-    std::string* out = new std::string();
-    out->resize(size);
-    ssize_t total_read, temp_read;
-    temp_read = read(sd, const_cast<char*>(out->c_str()), size);
-    total_read = temp_read;
-    while (total_read < size && temp_read) {
-        temp_read = read(sd, const_cast<char*>(out->c_str()), size - total_read);
-        total_read += temp_read;
-    }
-    std::cout << "Total size of input: " << size << std::endl;
-    out->resize(size);
-    return out;
+size_t Socket::get_data(char* out, size_t size) {
+    return read(sd, out, size);
 }

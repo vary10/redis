@@ -16,6 +16,6 @@ public:
     Socket(int sd);
     ~Socket();
     int get_sd();
-    void send_data(std::string && input);
-    std::string* get_data(size_t size);
+    void send_data(char* input, size_t len);
+    size_t get_data(char* out, size_t size);
 };

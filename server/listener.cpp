@@ -6,7 +6,7 @@ Listener::Listener(int port, unsigned int clients) {
     max_clients = clients;
     ld = socket(PF_INET, SOCK_STREAM, 0);
 
-    int opt;
+    int opt = 1;
     setsockopt(ld, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 
     struct sockaddr_in addr;

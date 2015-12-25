@@ -9,6 +9,7 @@ class Server {
 protected:
     Listener my_listener;
 public:
-    explicit Server(int port = 6379, unsigned int clients = 10);
-    virtual void my_serve() = 0;
+    explicit Server(int port = 6379, unsigned int clients = 1);
+    virtual void my_serve();
+    ~Server();
 };
