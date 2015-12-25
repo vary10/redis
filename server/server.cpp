@@ -14,10 +14,10 @@ void Server::my_serve() {
     while (true) {
         RedisValue val;
         ReadRedisValue(&from_client, &val);
-        std::cout << "read" << std::endl;
+        std::cout << "read " << std::endl;
         WriteRedisValue(&to_client, val);
         to_client.flush();
-        std::cout << "wrote" << std::endl;
+        std::cout << "wrote " << std::endl;
         from_client.read_more();
     }
 }
